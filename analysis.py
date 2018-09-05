@@ -2,8 +2,11 @@
 # written by Hyunjoon Kim
 import csv
 import os
+import matplotlib
+matplotlib.use('Agg') #for cli
+import matplotlib.pyplot as plt
 
-def filepath(year, month, city='nyc', data_dir='../data'):
+def filepath(year, month, city='nyc', data_dir='data'):
     """
     return filepath
     """
@@ -41,7 +44,19 @@ def make_tripduration_list(year, month):
         td = []
         for row in reader:
             td.append(int(row["tripduration"]))
-    print(td[0:6])
+    #print(td[0:6])
+    return td
+
+def plot_tripduration(td_list, filename):
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    ax.hist(td_list)
+    plt.savefig(filename)
+
+def plot_month_tripduration(year, month):
+    td=make_tripduration_list(year, month)
+    filename='tripduration_{0:d}{1:02d}.png'.format(year, month)
+    plot_tripduration(td, filename)
 
 if __name__ == "__main__":
     print(filename_nyc(2012, 7))
@@ -53,3 +68,5 @@ if __name__ == "__main__":
     print(filepath(2018, 1))
     print(filepath(2018, 7))
     make_tripduration_list(2016, 1)
+    plot_month_tripduration(2016, 1)
+    plot_month_tripduration(2016, 8)
