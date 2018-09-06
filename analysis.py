@@ -31,9 +31,9 @@ def filename_nyc(year, month):
     "YYYYMM-citibike-tripdata.csv"
     """
     if int(year) < 2014 or ((int(year) == 2014) and (int(month)<=8)) :
-        filename = "{0:04d}-{1:02d} - Citi Bike trip data.csv".format(year, month) 
+        filename = "{0:04d}-{1:02d} - Citi Bike trip data.csv".format(year, month)
     elif year == 2018 and month <= 3 :
-        filename = "{0:04d}{1:02d}-citibikenyc_tripdata.csv".format(year, month) 
+        filename = "{0:04d}{1:02d}_citibikenyc_tripdata.csv".format(year, month)
     else:
         filename = "{0:04d}{1:02d}-citibike-tripdata.csv".format(year, month)
     return filename
@@ -43,20 +43,34 @@ def make_tripduration_list(year, month):
         reader = csv.DictReader(csvfile)
         td = []
         for row in reader:
-            td.append(int(row["tripduration"]))
+            try:
+                td.append(int(row["tripduration"]))
+            except:
+                td.append(int(row["Trip Duration"]))
     #print(td[0:6])
     return td
 
+"""
 def plot_tripduration(td_list, filename):
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
-    ax.hist(td_list)
+    ax.hist(td_list, bins=60, range=(0, 3000))
     plt.savefig(filename)
+"""
 
 def plot_month_tripduration(year, month):
     td=make_tripduration_list(year, month)
     filename='tripduration_{0:d}{1:02d}.png'.format(year, month)
-    plot_tripduration(td, filename)
+
+    fig = plt.figure()
+    plt.title("Trip distribution {0:d}-{1:02d}".format(year, month))
+    ax = fig.add_subplot(1, 1, 1)
+    ax.hist(td, bins=60, range=(0, 2500))
+    ax.set_xlabel("Trip duration (s)")
+    ax.set_ylabel("Counts")
+
+    plt.savefig(filename)
+    print(" End to plot '{}'".format(filename))
 
 if __name__ == "__main__":
     print(filename_nyc(2012, 7))
@@ -67,6 +81,17 @@ if __name__ == "__main__":
     print(filepath(2014, 8))
     print(filepath(2018, 1))
     print(filepath(2018, 7))
-    make_tripduration_list(2016, 1)
-    plot_month_tripduration(2016, 1)
-    plot_month_tripduration(2016, 8)
+    plot_month_tripduration(2018, 1)
+    plot_month_tripduration(2018, 2)
+    plot_month_tripduration(2018, 3)
+    plot_month_tripduration(2018, 4)
+    plot_month_tripduration(2018, 5)
+    plot_month_tripduration(2018, 6)
+    plot_month_tripduration(2018, 7)
+'''
+    plot_month_tripduration(2017, 8)
+    plot_month_tripduration(2017, 9)
+    plot_month_tripduration(2017, 10)
+    plot_month_tripduration(2017, 11)
+    plot_month_tripduration(2017, 12)
+'''
