@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # written by Hyunjoon Kim
 import csv
+import pickle
 import os
 import datetime as dt
 import station_info
@@ -83,6 +84,26 @@ def add_stations_list_in_buffer(station_dict, buffer_length):
         print(v1.stations_in_buffer)
 
 
+def add_population_data_into_station_dict(station_dict, buffer_length):
+    for i, v in station_dict.items():
+        v.add_population_in_buffer(station_info.mesh_pickle_path, buffer_length=50)
+        print("Add population data to station {}.".format(i))
+
+
+def save_station_dict(station_dict):
+    #TODO change path
+    with open("data/station_info.pickle", "wb") as f:
+        pickle.dump(station_dict, f)
+    save_station_dict_csv(station_dict)
+
+
+def open_station_dict():
+    #TODO change path
+    with open("data/station_info.pickle", "rb") as f:
+        station_dict = pickle.load(f)
+    return station_dict
+
+
 def save_station_dict_csv(station_dict):
     with open("station_info.csv", "w") as f:
         fn = [
@@ -139,11 +160,13 @@ def plot_month_tripduration(year, month):
 
 if __name__ == "__main__":
     buffer_length = 300
-    #station_dict = make_station_dict(2013, 7, 2013, 12)
-    station_dict = make_station_dict(2013, 7, 2018, 9)
-    print("Make stations in buffer length list")
-    add_stations_list_in_buffer(station_dict, buffer_length)
-    save_station_dict_csv(station_dict)
+    #station_dict = make_station_dict(2013, 7, 2013, 8)
+    #station_dict = make_station_dict(2013, 7, 2018, 9)
+    #print("Make stations in buffer length list")
+    #add_stations_list_in_buffer(station_dict, buffer_length)
+    #save_station_dict(station_dict)
+    station_dict = open_station_dict()
+    add_population_data_into_station_dict(station_dict, 30)
     """
     for j in range(2015, 2017):
         for i in range(12):
